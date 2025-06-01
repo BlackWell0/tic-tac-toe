@@ -744,16 +744,16 @@
                 isAerial = true;
             }
 
-            const obstacleHeight = FIXED_OBSTACLE_HEIGHT; // Use fixed height
-            const obstacleWidth = FIXED_OBSTACLE_WIDTH;   // Use fixed width
+            const obstacleHeight = FIXED_OBSTACLE_HEIGHT; 
+            const obstacleWidth = FIXED_OBSTACLE_WIDTH;   
             let obstacleY;
 
             if (isAerial) {
-                obstacleY = dinoGameCanvas.height - 70 - (Math.random() * 30); // Position aerial obstacles higher
-                obstacleY = Math.max(20, obstacleY); // Ensure it's not too high
+                obstacleY = dinoGameCanvas.height - 70 - (Math.random() * 30); 
+                obstacleY = Math.max(20, obstacleY); 
                 obstacleY = Math.min(dinoGameCanvas.height - dino.height - obstacleHeight - 20, obstacleY); 
             } else {
-                obstacleY = dinoGameCanvas.height - obstacleHeight - 10; // Ground obstacle
+                obstacleY = dinoGameCanvas.height - obstacleHeight - 10; 
             }
 
             obstacles.push({ 
@@ -795,12 +795,12 @@
             let currentTargetSpeed;
             
             if (dinoScore <= 2500) {
-                obstacleIntervalBase = 150; // Slightly more spacing for easier phase
-                obstacleMinInterval = 42;   // Slightly more min spacing
-                obstacleScoreDivisor = 75; 
-                currentTargetSpeed = 4.2; 
-                if (dinoFrameCount % 480 === 0 && dinoGameSpeed < currentTargetSpeed) { 
-                     dinoGameSpeed += 0.05;
+                obstacleIntervalBase = 155; // Further increased base interval for easier phase
+                obstacleMinInterval = 45;   // Further increased min spacing
+                obstacleScoreDivisor = 80; 
+                currentTargetSpeed = 4.0; // Slightly reduced max speed for easy phase
+                if (dinoFrameCount % 500 === 0 && dinoGameSpeed < currentTargetSpeed) { 
+                     dinoGameSpeed += 0.04; // Slower speed increase
                 }
             } else {
                 obstacleIntervalBase = 130; 
