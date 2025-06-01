@@ -13,6 +13,11 @@
             --player-1-token-color: #f59e0b; /* Amber 500 */
             --player-2-token-color: #10b981; /* Emerald 500 */
             --ai-token-color: #6366f1; /* Indigo 500 */
+            --dino-color: #4b5563; /* Gray 600 */
+            --obstacle-color: #3f6212; /* Lime 700 */
+            --aerial-obstacle-color: #7c2d12; /* Orange 800 for aerial obstacles */
+            --snake-color: #ef4444; /* Red 500 */
+            --ladder-color: #22c55e; /* Green 500 */
         }
         body {
             font-family: 'Vazirmatn', sans-serif;
@@ -21,7 +26,7 @@
             align-items: center;
             justify-content: flex-start; 
             min-height: 100vh;
-            background-color: #f0f9ff; /* Sky 50 */
+            background-color: #f0f9ff; 
             background-image: url('p1.jpg');
             background-size: cover; 
             background-position: center; 
@@ -29,6 +34,7 @@
             background-attachment: fixed; 
             margin: 0;
             padding: 0.5rem;
+            overflow-x: hidden; 
         }
         body::before {
             content: "";
@@ -37,7 +43,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.55); /* افزایش شفافیت برای خوانایی بهتر */
+            background-color: rgba(255, 255, 255, 0.7); 
             z-index: -1; 
         }
         .container {
@@ -45,10 +51,10 @@
             flex-direction: column;
             align-items: center;
             width: 100%;
-            max-width: 600px; /* افزایش برای مار و پله */
+            max-width: 700px; 
             padding: 0.75rem;
-            background-color: rgba(255, 255, 255, 0.9); 
-            border-radius: 16px; /* گردی بیشتر */
+            background-color: rgba(255, 255, 255, 0.94); 
+            border-radius: 16px; 
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
         .credits {
@@ -57,236 +63,200 @@
             text-align: center;
             margin-bottom: 0.75rem;
             padding: 0.6rem; 
-            background-color: rgba(229, 231, 235, 0.92); 
+            background-color: rgba(229, 231, 235, 0.95); 
             border-radius: 8px; 
             width: calc(100% - 1.5rem); 
         }
         .credits a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
         .credits a:hover { text-decoration: underline; }
 
+        .top-controls { 
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            width: 100%;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
         .selectors-container {
             display: flex;
             flex-direction: column; 
             gap: 0.6rem; 
-            margin-bottom: 0.75rem;
             width: 100%;
             align-items: center;
         }
-        .game-mode-selector, .game-type-selector { /* تغییر نام size-selector */
+        .game-mode-selector, .game-type-selector {
             display: flex;
             flex-wrap: wrap; 
-            gap: 0.5rem; 
-            background-color: rgba(229, 231, 235, 0.88); 
-            padding: 0.4rem;
+            gap: 0.4rem; 
+            background-color: rgba(229, 231, 235, 0.9); 
+            padding: 0.3rem; 
             border-radius: 8px;
             justify-content: center;
         }
         .game-mode-selector button, .game-type-selector button {
-            background-color: #38bdf8; /* Sky 400 */
+            background-color: #38bdf8; 
             color: white;
-            padding: 8px 12px; /* کمی کوچکتر برای جای‌گیری بیشتر */
-            font-size: 0.8rem; 
-            border-radius: 6px;
+            padding: 6px 9px; 
+            font-size: 0.7rem; 
+            border-radius: 5px; 
             border: none;
             box-shadow: 0 1px 2px rgba(0,0,0,0.1);
             transition: background-color 0.2s ease, box-shadow 0.2s ease;
         }
         .game-mode-selector button.active, .game-type-selector button.active {
-            background-color: #0284c7; /* Sky 600 */
+            background-color: #0284c7; 
             font-weight: bold;
             box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
+
         .main-title {
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0,0,0,0.78);
             color: white;
-            padding: 0.7rem 1.4rem;
+            padding: 0.6rem 1.2rem;
             border-radius: 10px;
             margin-bottom: 0.75rem; 
             text-align: center;
-            font-size: 1.7rem; 
+            font-size: 1.5rem; 
         }
         .status {
-            font-size: 1.25rem; 
+            font-size: 1.15rem; 
             margin-bottom: 0.75rem;
-            color: #1e293b; /* Slate 800 */
+            color: #1e293b; 
             text-align: center;
-            min-height: 2.1rem; 
-            background-color: rgba(241, 245, 249, 0.95); /* Slate 100 */
-            padding: 0.6rem 0.8rem;
+            min-height: 1.8rem; 
+            background-color: rgba(241, 245, 249, 0.97); 
+            padding: 0.4rem 0.6rem;
             border-radius: 8px;
             font-weight: 600;
             width: calc(100% - 1.5rem);
         }
-        .board-area { /* محفظه کلی برای تخته بازی و کنترل‌های مرتبط */
+        .board-area { 
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
         }
-        .board-container {
+        .board-container { 
             margin-bottom: 15px; 
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 8px; 
-            background-color: rgba(203, 213, 225, 0.88); /* Slate 300 */
+            background-color: rgba(203, 213, 225, 0.9); 
             border-radius: 10px; 
+            position: relative; 
         }
         .board {
             display: grid;
             background-color: transparent; 
             padding: 3px;
             border-radius: 6px;
-            position: relative; /* برای مار و پله */
+            position: relative; 
         }
-        /* Tic-Tac-Toe & Gomoku Boards */
-        .board.type-tictactoe.size-3x3 { grid-template-columns: repeat(3, 1fr); width: 220px; height: 220px; gap: 4px;}
-        .board.type-tictactoe.size-5x5 { grid-template-columns: repeat(5, 1fr); width: 260px; height: 260px; gap: 3px;}
-        .board.type-gomoku.size-9x9 { grid-template-columns: repeat(9, 1fr); width: 324px; height: 324px; gap: 2px;}
+        /* TTT & Gomoku Boards */
+        .board.type-tictactoe.size-3x3 { grid-template-columns: repeat(3, 1fr); width: 200px; height: 200px; gap: 3px;}
+        .board.type-tictactoe.size-5x5 { grid-template-columns: repeat(5, 1fr); width: 240px; height: 240px; gap: 2px;}
+        .board.type-gomoku.size-9x9 { grid-template-columns: repeat(9, 1fr); width: 288px; height: 288px; gap: 1px;}
         
         /* Snakes and Ladders Board */
         .board.type-snakesladders {
             grid-template-columns: repeat(10, 1fr);
             grid-template-rows: repeat(10, 1fr);
-            width: 380px; /* اندازه مناسب برای ۱۰×۱۰ */
-            height: 380px;
-            border: 2px solid #94a3b8; /* Slate 400 */
-            background-color: #e0f2fe; /* Sky 100 - پس زمینه روشن برای تخته */
+            width: 320px; 
+            height: 320px;
+            border: 2px solid #94a3b8; 
+            background-color: #e0f2fe; 
             gap: 1px;
         }
+        #slOverlayCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 5; }
         .sl-cell {
-            border: 1px solid #cbd5e1; /* Slate 300 */
-            display: flex;
-            flex-direction: column; /* برای شماره و مهره‌ها */
-            align-items: center;
-            justify-content: space-between; /* شماره بالا، مهره‌ها پایین */
-            font-weight: bold;
-            position: relative; /* برای مهره‌ها */
-            padding: 2px;
-            background-color: #f0f9ff; /* Sky 50 */
+            border: 1px solid #cbd5e1; display: flex; flex-direction: column; 
+            align-items: center; justify-content: space-between; font-weight: bold;
+            position: relative; padding: 1px; background-color: #f0f9ff; 
         }
-        .sl-cell:nth-child(odd) { background-color: #e0f2fe; /* Sky 100 */ }
-
-        .sl-cell-number {
-            font-size: 0.6rem;
-            color: #64748b; /* Slate 500 */
-            align-self: flex-start; /* شماره در گوشه بالا */
-        }
-        .sl-player-tokens {
-            display: flex;
-            gap: 2px;
-            position: absolute;
-            bottom: 2px;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-        .sl-player-token {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            border: 1px solid black;
-        }
+        .sl-cell:nth-child(odd) { background-color: #e0f2fe; }
+        .sl-cell-number { font-size: 0.5rem; color: #64748b; align-self: flex-start; }
+        .sl-player-tokens { display: flex; gap: 1px; position: absolute; bottom: 1px; left: 50%; transform: translateX(-50%); z-index: 10; }
+        .sl-player-token { width: 7px; height: 7px; border-radius: 50%; border: 1px solid black; }
         .sl-player-token.p1 { background-color: var(--player-1-token-color); }
         .sl-player-token.p2 { background-color: var(--player-2-token-color); }
         .sl-player-token.ai { background-color: var(--ai-token-color); }
 
-        /* Visuals for Snakes and Ladders (Simplified with colored cells) */
-        .sl-snake-head { background-color: #fda4af !important; /* Rose 300 */ }
-        .sl-snake-tail { background-color: #fecaca !important; /* Rose 200 */ }
-        .sl-ladder-bottom { background-color: #86efac !important; /* Green 300 */ }
-        .sl-ladder-top { background-color: #bbf7d0 !important; /* Green 200 */ }
-
-        /* Tic-Tac-Toe & Gomoku Cells */
+        /* TTT & Gomoku Cells */
         .cell {
-            background-color: rgba(255, 255, 255, 0.97); 
-            border: 1px solid #b0b0b0; 
-            border-radius: 4px; 
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s ease, transform 0.1s ease;
+            background-color: rgba(255, 255, 255, 0.98); border: 1px solid #b0b0b0; 
+            border-radius: 4px; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; cursor: pointer; transition: background-color 0.2s ease, transform 0.1s ease;
             color: #374151;
         }
-        .cell:hover:not(.occupied):not(.disabled) {
-            background-color: #d6eeff; 
-            transform: scale(1.03);
-        }
+        .cell:hover:not(.occupied):not(.disabled) { background-color: #d6eeff; transform: scale(1.03); }
         .cell.disabled { cursor: not-allowed; background-color: #e8e8e8; }
-        .board.type-tictactoe.size-3x3 .cell { font-size: 2.3rem; } 
-        .board.type-tictactoe.size-5x5 .cell { font-size: 1.4rem; }
-        .board.type-gomoku.size-9x9 .cell { font-size: 0.9rem; } 
-
+        .board.type-tictactoe.size-3x3 .cell { font-size: 2rem; } 
+        .board.type-tictactoe.size-5x5 .cell { font-size: 1.2rem; }
+        .board.type-gomoku.size-9x9 .cell { font-size: 0.75rem; } 
         .cell.x { color: var(--player-x-color); } 
         .cell.o { color: var(--player-o-color); } 
         .cell.occupied { cursor: not-allowed; }
 
-        /* Dice Area for Snakes and Ladders */
+        /* Dino Game Area */
+        #dinoGameCanvas { border: 2px solid #6b7280; background-color: #f9fafb; border-radius: 8px; }
+        .dino-score-display { font-size: 1.2rem; font-weight: bold; color: var(--dino-color); margin-top: 0.5rem; }
+
+        /* Dice Area for S&L */
         .dice-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background-color: rgba(229, 231, 235, 0.9);
-            border-radius: 8px;
-            width: calc(100% - 1.5rem);
+            display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
+            margin-top: 1rem; padding: 0.75rem; background-color: rgba(229, 231, 235, 0.92);
+            border-radius: 8px; width: calc(100% - 1.5rem);
         }
         .dice-display {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #1e3a8a; /* Blue 800 */
-            background-color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 6px;
-            min-width: 60px;
-            text-align: center;
-            border: 2px solid #93c5fd; /* Blue 300 */
+            font-size: 2.3rem; font-weight: bold; color: #1e3a8a; background-color: white;
+            padding: 0.4rem 1.3rem; border-radius: 6px; min-width: 55px;
+            text-align: center; border: 2px solid #93c5fd; 
         }
         #rollDiceButton {
-            background-color: #fb923c; /* Orange 400 */
-            color: white;
-            padding: 10px 20px;
-            font-size: 1rem;
-            border-radius: 6px;
-            border: none;
+            background-color: #fb923c; color: white; padding: 9px 18px;
+            font-size: 0.9rem; border-radius: 6px; border: none;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        #rollDiceButton:hover { background-color: #f97316; /* Orange 500 */ }
-        #rollDiceButton:disabled { background-color: #fdba74; /* Orange 300 */ cursor: not-allowed;}
-
+        #rollDiceButton:hover { background-color: #f97316; }
+        #rollDiceButton:disabled { background-color: #fdba74; cursor: not-allowed;}
 
         #restartButton {
-            background-color: #0f766e; 
-            color: white;
-            padding: 12px 24px; font-size: 1.05rem; 
+            background-color: #0f766e; color: white; padding: 11px 22px; font-size: 1rem; 
             border: none; border-radius: 8px; cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            width: auto; 
-            margin-top: 1rem; /* فاصله از پایین‌ترین المان */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); width: auto; margin-top: 1rem; 
         }
         #restartButton:hover { background-color: #0d655d; transform: translateY(-1px); }
-        .message-box {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            background-color: white; padding: 30px; border-radius: 10px; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); z-index: 1000;
-            text-align: center; border: 1px solid #e0e0e0;
-            width: 90%; max-width: 400px; 
+        
+        /* Game Instructions Area */
+        #gameInstructionsContainer {
+            margin-top: 1rem; padding: 0.75rem; background-color: rgba(239, 246, 255, 0.95); 
+            border: 1px solid #bfdbfe; border-radius: 8px; width: calc(100% - 1.5rem);
+            text-align: right; direction: rtl;
         }
-        .message-box h2 { font-size: 1.7rem; margin-bottom: 15px; color: #111827; }
-        .message-box button {
+        #gameInstructionsContainer h3 { font-size: 1.1rem; font-weight: bold; color: #1e3a8a; margin-bottom: 0.5rem; }
+        #gameInstructionsContainer p { font-size: 0.9rem; color: #374151; line-height: 1.6; margin-bottom: 0.5rem; }
+        #gameInstructionsContainer ul { list-style: disc; margin-right: 20px; font-size: 0.85rem; color: #4b5563; }
+        #gameInstructionsContainer li { margin-bottom: 0.25rem; }
+
+        /* Modal Styles (General) */
+        .modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background-color: white; padding: 25px; border-radius: 12px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25); z-index: 1000;
+            text-align: center; border: 1px solid #e0e0e0; width: 90%; max-width: 450px; 
+        }
+        .modal h2 { font-size: 1.6rem; margin-bottom: 15px; color: #111827; }
+        .modal button {
             margin-top: 20px; background-color: #3b82f6; color:white;
-            padding: 10px 20px; font-size: 1rem; border-radius: 6px;
-            border:none;
+            padding: 10px 20px; font-size: 1rem; border-radius: 6px; border:none;
         }
-        .message-box button:hover { background-color: #1e40af; } 
+        .modal button:hover { background-color: #1e40af; } 
         .overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.72); z-index: 999; 
+            background-color: rgba(0, 0, 0, 0.75); z-index: 999; 
         }
         .hidden { display: none; }
     </style>
@@ -298,34 +268,47 @@
         </div>
         <h1 class="text-4xl font-bold main-title">مجموعه بازی‌های پیشرفته</h1>
 
-        <div class="selectors-container">
-            <div class="game-mode-selector">
-                <button id="vsAIButton" class="active">بازی با هوش مصنوعی</button>
-                <button id="vsPlayerButton">بازی دونفره</button>
-            </div>
-            <div class="game-type-selector"> <button id="gameTypeTTT3" class="active">دوز ۳×۳</button>
-                <button id="gameTypeTTT5">دوز ۵×۵</button>
-                <button id="gameTypeGomoku9">گوموکو ۹×۹</button>
-                <button id="gameTypeSnakesLadders">مار و پله ۱۰×۱۰</button>
+        <div class="top-controls">
+            <div class="selectors-container">
+                <div class="game-mode-selector">
+                    <button id="vsAIButton" class="active">بازی با هوش مصنوعی</button>
+                    <button id="vsPlayerButton">بازی دونفره</button>
+                </div>
+                <div class="game-type-selector">
+                    <button id="gameTypeTTT3" class="active">دوز ۳×۳</button>
+                    <button id="gameTypeTTT5">دوز ۵×۵</button>
+                    <button id="gameTypeGomoku9">گوموکو ۹×۹</button>
+                    <button id="gameTypeSnakesLadders">مار و پله</button>
+                    <button id="gameTypeDino">بازی دایناسور</button>
+                    </div>
             </div>
         </div>
 
         <div id="status" class="status">نوبت شما (X)</div>
         
         <div class="board-area">
-            <div class="board-container">
-                <div id="board" class="board type-tictactoe size-3x3">
-                    </div>
+            <div id="gridBoardContainer" class="board-container"> 
+                <div id="board" class="board type-tictactoe size-3x3"></div>
+                <canvas id="slOverlayCanvas" class="hidden"></canvas> 
+            </div>
+            <div id="dinoGameArea" class="hidden"> 
+                <canvas id="dinoGameCanvas"></canvas>
+                <div id="dinoScoreDisplay" class="dino-score-display">امتیاز: 0</div>
             </div>
             <div id="diceArea" class="dice-area hidden">
                 <div id="diceDisplay" class="dice-display">0</div>
                 <button id="rollDiceButton">پرتاب تاس</button>
             </div>
         </div>
+        <div id="gameInstructionsContainer" class="hidden">
+            <h3 id="instructionsGameTitle"></h3>
+            <p id="instructionsGameRules"></p>
+            <ul id="instructionsGameList"></ul>
+        </div>
         <button id="restartButton">شروع مجدد</button>
     </div>
 
-    <div id="messageBox" class="message-box hidden">
+    <div id="messageBox" class="modal hidden">
         <h2 id="messageText"></h2>
         <button id="closeMessageButton">باشه</button>
     </div>
@@ -336,9 +319,16 @@
         const boardElement = document.getElementById('board');
         const statusElement = document.getElementById('status');
         const restartButton = document.getElementById('restartButton');
-        const messageBox = document.getElementById('messageBox');
+        
+        const messageBoxModal = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
         const closeMessageButton = document.getElementById('closeMessageButton');
+        
+        const gameInstructionsContainer = document.getElementById('gameInstructionsContainer');
+        const instructionsGameTitle = document.getElementById('instructionsGameTitle');
+        const instructionsGameRules = document.getElementById('instructionsGameRules');
+        const instructionsGameList = document.getElementById('instructionsGameList');
+
         const overlay = document.getElementById('overlay');
         
         const vsAIButton = document.getElementById('vsAIButton');
@@ -347,49 +337,66 @@
         const gameTypeTTT5Button = document.getElementById('gameTypeTTT5');
         const gameTypeGomoku9Button = document.getElementById('gameTypeGomoku9');
         const gameTypeSnakesLaddersButton = document.getElementById('gameTypeSnakesLadders');
+        const gameTypeDinoButton = document.getElementById('gameTypeDino');
 
+        const gridBoardContainer = document.getElementById('gridBoardContainer');
         const diceAreaElement = document.getElementById('diceArea');
         const diceDisplayElement = document.getElementById('diceDisplay');
         const rollDiceButton = document.getElementById('rollDiceButton');
 
-        // --- Game Constants ---
-        const PLAYER_X = 'X'; // For TTT/Gomoku
-        const PLAYER_O = 'O'; // For TTT/Gomoku
-        const SL_PLAYER_1 = 'P1'; // For Snakes & Ladders
-        const SL_PLAYER_2 = 'P2'; // For Snakes & Ladders
-        const SL_AI_PLAYER = 'AI';
+        const dinoGameArea = document.getElementById('dinoGameArea');
+        const dinoGameCanvas = document.getElementById('dinoGameCanvas');
+        const dinoScoreDisplay = document.getElementById('dinoScoreDisplay');
+        const ctxDino = dinoGameCanvas.getContext('2d'); 
 
+        const slOverlayCanvas = document.getElementById('slOverlayCanvas');
+        const ctxSL = slOverlayCanvas.getContext('2d');
+
+        // --- Game Constants ---
+        const PLAYER_X = 'X'; 
+        const PLAYER_O = 'O'; 
+        const SL_PLAYER_1 = 'P1'; 
+        const SL_PLAYER_2 = 'P2'; 
+        const SL_AI_PLAYER = 'AI_SL'; 
 
         // --- Game State Variables ---
-        let humanPlayerSymbol = PLAYER_X; // TTT/Gomoku
-        let aiPlayerSymbol = PLAYER_O;    // TTT/Gomoku
+        let humanPlayerSymbol = PLAYER_X; 
+        let aiPlayerSymbol = PLAYER_O;    
         let slHumanPlayer = SL_PLAYER_1;
         let slAiPlayer = SL_AI_PLAYER;
 
-
         let currentPlayer;
-        let boardState = []; // For TTT/Gomoku
-        let slPlayerPositions = {}; // For Snakes & Ladders {P1: 0, P2: 0} or {P1:0, AI:0}
+        let boardState = []; 
+        let slPlayerPositions = {}; 
 
         let gameActive = true;
-        let currentGameType = 'TTT3'; // TTT3, TTT5, Gomoku9, SnakesLadders
-        let gameMode = 'vsAI'; // vsAI, vsPlayer
+        let currentGameType = 'TTT3'; 
+        let gameMode = 'vsAI'; 
         
-        let tttgBoardSize = 3; // TicTacToe/Gomoku board size
-        let tttgWinStreak = 3; // TicTacToe/Gomoku win streak
+        let tttgBoardSize = 3; 
+        let tttgWinStreak = 3; 
         let tttgWinningCombinations = [];
 
         const SL_BOARD_SIZE = 100;
-        const slSnakesAndLadders = { // مقصد : مبدا
-            // نردبان‌ها (مقصد > مبدا)
+        const slSnakesAndLadders = { 
             4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91,
-            // مارها (مقصد < مبدا)
             17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78
         };
+
+        // --- Dino Game Variables ---
+        let dino = { x: 50, y: 0, width: 30, height: 30, dy: 0, gravity: 0.6, jumpPower: -15.5, onGround: true };
+        let obstacles = [];
+        let dinoScore = 0;
+        let dinoGameSpeed = 2.8; 
+        let dinoFrameCount = 0;
+        let dinoGameLoopId;
+        const DINO_CANVAS_WIDTH = 500;
+        const DINO_CANVAS_HEIGHT = 150;
+        const FIXED_OBSTACLE_HEIGHT = 25; 
+        const FIXED_OBSTACLE_WIDTH = 18;  
         
         // --- Winning Combinations Generation (TTT/Gomoku) ---
         function generateTttgWinningCombinations(boardSize, streakSize) {
-            // ... (کد قبلی بدون تغییر باقی می‌ماند) ...
             const combinations = [];
             for (let r = 0; r < boardSize; r++) { 
                 for (let c = 0; c <= boardSize - streakSize; c++) {
@@ -421,15 +428,30 @@
         // --- Game Initialization ---
         function initializeGame() {
             gameActive = true;
-            hideModal();
+            hideModal(messageBoxModal);
             updateActiveButtonStyles();
-            diceAreaElement.classList.add('hidden'); // Hide dice by default
+            
+            gridBoardContainer.classList.add('hidden');
+            diceAreaElement.classList.add('hidden');
+            dinoGameArea.classList.add('hidden');
+            gameInstructionsContainer.classList.add('hidden'); 
+            slOverlayCanvas.classList.add('hidden'); 
+            document.querySelector('.game-mode-selector').classList.remove('hidden');
+
+            if (dinoGameLoopId) cancelAnimationFrame(dinoGameLoopId); 
 
             if (currentGameType === 'SnakesLadders') {
+                gridBoardContainer.classList.remove('hidden');
                 initializeSnakesLaddersGame();
+            } else if (currentGameType === 'Dino') {
+                dinoGameArea.classList.remove('hidden');
+                document.querySelector('.game-mode-selector').classList.add('hidden'); 
+                initializeDinoGame();
             } else { // TTT or Gomoku
+                gridBoardContainer.classList.remove('hidden');
                 initializeTttgGame();
             }
+            displayGameInstructions(); 
         }
 
         function initializeTttgGame() {
@@ -440,7 +462,7 @@
             boardElement.classList.add(`size-${tttgBoardSize}x${tttgBoardSize}`);
             
             boardState = Array(tttgBoardSize * tttgBoardSize).fill(null);
-            createTttgBoard();
+            createTttgBoard(); 
 
             if (gameMode === 'vsAI') {
                 const humanStarts = Math.random() < 0.5;
@@ -456,7 +478,7 @@
                     setBoardDisabled(true); 
                     setTimeout(() => { if (gameActive) tttgAiMove(); }, 1000); 
                 }
-            } else { // vsPlayer
+            } else { 
                 currentPlayer = PLAYER_X; 
                 statusElement.textContent = `نوبت بازیکن ${PLAYER_X}`;
                 setBoardDisabled(false);
@@ -464,8 +486,8 @@
         }
         
         function initializeSnakesLaddersGame() {
-            boardElement.className = 'board type-snakesladders';
-            slPlayerPositions = {}; // Reset positions
+            boardElement.className = 'board type-snakesladders'; 
+            slPlayerPositions = {}; 
             diceAreaElement.classList.remove('hidden');
             rollDiceButton.disabled = false;
             diceDisplayElement.textContent = "0";
@@ -486,25 +508,43 @@
                     rollDiceButton.disabled = true;
                     setTimeout(() => { if (gameActive) slAiTurn(); }, 1000);
                 }
-            } else { // vsPlayer
+            } else { 
                 slPlayerPositions[SL_PLAYER_1] = 0;
                 slPlayerPositions[SL_PLAYER_2] = 0;
                 currentPlayer = SL_PLAYER_1;
                 statusElement.textContent = `نوبت بازیکن ۱`;
                 rollDiceButton.disabled = false;
             }
-            drawSnakesLaddersBoard();
+            drawSnakesLaddersBoard(); 
+            
+            slOverlayCanvas.width = boardElement.offsetWidth;
+            slOverlayCanvas.height = boardElement.offsetHeight;
+            slOverlayCanvas.classList.remove('hidden');
+            drawSLGraphicalElements(ctxSL, boardElement);
+        }
+
+        function initializeDinoGame() {
+            statusElement.textContent = "برای پرش فاصله یا کلیک را بزنید!";
+            dinoGameCanvas.width = DINO_CANVAS_WIDTH;
+            dinoGameCanvas.height = DINO_CANVAS_HEIGHT;
+            
+            dino.y = dinoGameCanvas.height - dino.height - 10; 
+            dino.onGround = true;
+            dino.dy = 0;
+            obstacles = [];
+            dinoScore = 0;
+            dinoFrameCount = 0;
+            dinoGameSpeed = 2.8; 
+            gameActive = true; 
+
+            if (dinoGameLoopId) cancelAnimationFrame(dinoGameLoopId); 
+            dinoGameLoop();
         }
         
-        function setBoardDisabled(disabled) { // For TTT/Gomoku
+        function setBoardDisabled(disabled) { 
             const cells = boardElement.querySelectorAll('.cell');
-            if (disabled) {
-                boardElement.classList.add('disabled'); 
-                cells.forEach(cell => cell.classList.add('disabled'));
-            } else {
-                boardElement.classList.remove('disabled');
-                cells.forEach(cell => cell.classList.remove('disabled'));
-            }
+            boardElement.classList.toggle('disabled', disabled);
+            cells.forEach(cell => cell.classList.toggle('disabled', disabled));
         }
 
         // --- Board Creation ---
@@ -520,46 +560,65 @@
         }
 
         function drawSnakesLaddersBoard() {
-            boardElement.innerHTML = '';
-            for (let i = SL_BOARD_SIZE; i >= 1; i--) { // Draw from 100 down to 1 for typical S&L layout
+            boardElement.innerHTML = ''; 
+            for (let i = SL_BOARD_SIZE; i >= 1; i--) { 
                 const cell = document.createElement('div');
                 cell.classList.add('sl-cell');
                 cell.dataset.square = i;
-
                 const cellNumber = document.createElement('span');
                 cellNumber.classList.add('sl-cell-number');
                 cellNumber.textContent = i;
                 cell.appendChild(cellNumber);
-
                 const tokensContainer = document.createElement('div');
                 tokensContainer.classList.add('sl-player-tokens');
                 cell.appendChild(tokensContainer);
-                
-                // Mark snakes and ladders visually (simple version)
-                if (slSnakesAndLadders[i]) {
-                    if (slSnakesAndLadders[i] < i) cell.classList.add('sl-snake-head');
-                    else cell.classList.add('sl-ladder-bottom');
-                } else {
-                    for (const start in slSnakesAndLadders) {
-                        if (slSnakesAndLadders[start] === i) {
-                             if (parseInt(start) > i) cell.classList.add('sl-snake-tail');
-                             else cell.classList.add('sl-ladder-top');
-                             break;
-                        }
-                    }
-                }
                 boardElement.appendChild(cell);
             }
             updateSlPlayerTokenPositions();
         }
+
+        function drawSLGraphicalElements(canvasContext, boardDiv) {
+            canvasContext.clearRect(0, 0, canvasContext.canvas.width, canvasContext.canvas.height);
+            const snakeColor = getComputedStyle(document.documentElement).getPropertyValue('--snake-color').trim();
+            const ladderColor = getComputedStyle(document.documentElement).getPropertyValue('--ladder-color').trim();
+
+            for (const startSquare in slSnakesAndLadders) {
+                const endSquare = slSnakesAndLadders[startSquare];
+                const startCellElement = boardDiv.querySelector(`.sl-cell[data-square="${startSquare}"]`);
+                const endCellElement = boardDiv.querySelector(`.sl-cell[data-square="${endSquare}"]`);
+
+                if (startCellElement && endCellElement) {
+                    const startX = startCellElement.offsetLeft + startCellElement.offsetWidth / 2;
+                    const startY = startCellElement.offsetTop + startCellElement.offsetHeight / 2;
+                    const endX = endCellElement.offsetLeft + endCellElement.offsetWidth / 2;
+                    const endY = endCellElement.offsetTop + endCellElement.offsetHeight / 2;
+
+                    canvasContext.beginPath();
+                    canvasContext.moveTo(startX, startY);
+                    canvasContext.lineTo(endX, endY);
+
+                    if (endSquare < parseInt(startSquare)) { // Snake
+                        canvasContext.strokeStyle = snakeColor;
+                        canvasContext.lineWidth = 6;
+                        canvasContext.stroke(); 
+                        canvasContext.beginPath();
+                        canvasContext.arc(startX, startY, 7, 0, 2 * Math.PI);
+                        canvasContext.fillStyle = snakeColor;
+                        canvasContext.fill();
+                    } else { // Ladder
+                        canvasContext.strokeStyle = ladderColor;
+                        canvasContext.lineWidth = 8; 
+                        canvasContext.stroke();
+                    }
+                }
+            }
+        }
         
         function updateSlPlayerTokenPositions() {
-            // Clear all existing tokens
             document.querySelectorAll('.sl-player-token').forEach(token => token.remove());
-
             for (const player in slPlayerPositions) {
                 const position = slPlayerPositions[player];
-                if (position > 0) { // Only draw if on board
+                if (position > 0) { 
                     const cellElement = boardElement.querySelector(`.sl-cell[data-square="${position}"]`);
                     if (cellElement) {
                         const tokensContainer = cellElement.querySelector('.sl-player-tokens');
@@ -568,40 +627,25 @@
                         if (player === SL_PLAYER_1) tokenElement.classList.add('p1');
                         else if (player === SL_PLAYER_2) tokenElement.classList.add('p2');
                         else if (player === SL_AI_PLAYER) tokenElement.classList.add('ai');
-                        tokensContainer.appendChild(tokenElement);
+                        if(tokensContainer) tokensContainer.appendChild(tokenElement);
                     }
                 }
             }
         }
 
-
         // --- Player Interaction ---
         function handleTttgCellClick(event) {
             if (!gameActive || (gameMode === 'vsAI' && currentPlayer === aiPlayerSymbol)) return;
-
             const clickedCell = event.target;
             if (clickedCell.classList.contains('disabled')) return;
-
             const cellIndex = parseInt(clickedCell.dataset.index);
             if (boardState[cellIndex] !== null) return;
-
             tttgMakeMove(cellIndex, currentPlayer);
-
             if (tttgCheckWin(currentPlayer)) {
-                let winnerName = '';
-                if (gameMode === 'vsAI') {
-                    winnerName = (currentPlayer === humanPlayerSymbol) ? `شما (${humanPlayerSymbol})` : `هوش مصنوعی (${aiPlayerSymbol})`;
-                } else {
-                    winnerName = `بازیکن ${currentPlayer}`;
-                }
-                endGame(`${winnerName} برنده شد!`);
-                return;
+                let winnerName = (gameMode === 'vsAI') ? ((currentPlayer === humanPlayerSymbol) ? `شما (${humanPlayerSymbol})` : `هوش مصنوعی (${aiPlayerSymbol})`) : `بازیکن ${currentPlayer}`;
+                endGame(`${winnerName} برنده شد!`); return;
             }
-            if (tttgIsBoardFull()) {
-                endGame('بازی مساوی شد!');
-                return;
-            }
-
+            if (tttgIsBoardFull()) { endGame('بازی مساوی شد!'); return; }
             if (gameMode === 'vsAI') {
                 currentPlayer = aiPlayerSymbol; 
                 statusElement.textContent = `هوش مصنوعی (${aiPlayerSymbol}) در حال فکر کردن...`;
@@ -615,60 +659,50 @@
 
         rollDiceButton.addEventListener('click', () => {
             if (!gameActive || (gameMode === 'vsAI' && currentPlayer === slAiPlayer)) return;
-            
             const diceValue = Math.floor(Math.random() * 6) + 1;
             diceDisplayElement.textContent = diceValue;
-            rollDiceButton.disabled = true; // Disable until move is complete or next player's turn
-
+            rollDiceButton.disabled = true; 
             slMoveCurrentPlayer(diceValue);
         });
 
         function slMoveCurrentPlayer(steps) {
-            let currentPosition = slPlayerPositions[currentPlayer];
+            let currentPosition = slPlayerPositions[currentPlayer] || 0; 
             let newPosition = currentPosition + steps;
-
-            statusElement.textContent = `${(gameMode === 'vsAI' && currentPlayer === slAiPlayer) ? 'هوش مصنوعی' : 'بازیکن ' + (currentPlayer === SL_PLAYER_1 ? '۱' : '۲')} تاس ${steps} آورد و از ${currentPosition || 'شروع'} به ${Math.min(newPosition, SL_BOARD_SIZE)} رفت.`;
+            statusElement.textContent = `${(gameMode === 'vsAI' && currentPlayer === slAiPlayer) ? 'هوش مصنوعی' : 'بازیکن ' + (currentPlayer === SL_PLAYER_1 ? '۱' : '۲')} تاس ${steps} آورد.`;
             
-            if (newPosition > SL_BOARD_SIZE) {
-                newPosition = SL_BOARD_SIZE - (newPosition - SL_BOARD_SIZE); // Bounce back rule
-            }
-             if (newPosition === SL_BOARD_SIZE) { // Exact win
+            if (newPosition > SL_BOARD_SIZE) newPosition = SL_BOARD_SIZE - (newPosition - SL_BOARD_SIZE); 
+            if (newPosition === SL_BOARD_SIZE) { 
                 slPlayerPositions[currentPlayer] = newPosition;
                 updateSlPlayerTokenPositions();
                 const winnerName = (gameMode === 'vsAI') ? (currentPlayer === slHumanPlayer ? 'شما (بازیکن ۱)' : 'هوش مصنوعی') : `بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
-                endGame(`${winnerName} برنده شد!`);
-                return;
+                endGame(`${winnerName} برنده شد!`); return;
             }
-
-
-            // Check for snakes or ladders
-            setTimeout(() => { // Delay to show initial move
+            setTimeout(() => { 
                 let finalPosition = newPosition;
+                let messageAddon = ` از خانه ${currentPosition || 'شروع'} به ${newPosition} رفت.`;
                 if (slSnakesAndLadders[newPosition]) {
                     finalPosition = slSnakesAndLadders[newPosition];
-                    statusElement.textContent += (finalPosition < newPosition) ? ` وای! مار در خانه ${newPosition}! به ${finalPosition} سقوط کرد.` : ` عالی! نردبان در خانه ${newPosition}! به ${finalPosition} صعود کرد.`;
+                    messageAddon += (finalPosition < newPosition) ? ` وای! مار در ${newPosition}! به ${finalPosition} سقوط کرد.` : ` عالی! نردبان در ${newPosition}! به ${finalPosition} صعود کرد.`;
                 }
+                statusElement.textContent = `${(gameMode === 'vsAI' && currentPlayer === slAiPlayer) ? 'هوش مصنوعی' : 'بازیکن ' + (currentPlayer === SL_PLAYER_1 ? '۱' : '۲')} تاس ${steps} آورد.` + messageAddon;
+
                 slPlayerPositions[currentPlayer] = finalPosition;
                 updateSlPlayerTokenPositions();
-
-                 if (finalPosition === SL_BOARD_SIZE) { // Win after snake/ladder
+                if (finalPosition === SL_BOARD_SIZE) { 
                     const winnerName = (gameMode === 'vsAI') ? (currentPlayer === slHumanPlayer ? 'شما (بازیکن ۱)' : 'هوش مصنوعی') : `بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
-                    endGame(`${winnerName} برنده شد!`);
-                    return;
+                    endGame(`${winnerName} برنده شد!`); return;
                 }
-
-                // Switch turns
                 if (gameMode === 'vsAI') {
                     if (currentPlayer === slHumanPlayer) {
                         currentPlayer = slAiPlayer;
                         statusElement.textContent = `نوبت هوش مصنوعی...`;
                         setTimeout(() => { if(gameActive) slAiTurn(); }, 1200);
-                    } else { // AI's turn just finished
+                    } else { 
                         currentPlayer = slHumanPlayer;
                         statusElement.textContent = `نوبت شما (بازیکن ۱)`;
                         rollDiceButton.disabled = false;
                     }
-                } else { // vsPlayer
+                } else { 
                     currentPlayer = (currentPlayer === SL_PLAYER_1) ? SL_PLAYER_2 : SL_PLAYER_1;
                     statusElement.textContent = `نوبت بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
                     rollDiceButton.disabled = false;
@@ -682,6 +716,129 @@
             diceDisplayElement.textContent = `AI: ${diceValue}`;
             slMoveCurrentPlayer(diceValue);
         }
+
+        // --- Dino Game Logic ---
+        function drawDino() {
+            ctxDino.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--dino-color').trim();
+            ctxDino.fillRect(dino.x, dino.y, dino.width, dino.height);
+        }
+
+        function drawObstacle(obstacle) {
+            const obstacleColor = obstacle.isAerial ? 
+                                getComputedStyle(document.documentElement).getPropertyValue('--aerial-obstacle-color').trim() :
+                                getComputedStyle(document.documentElement).getPropertyValue('--obstacle-color').trim();
+            ctxDino.fillStyle = obstacleColor;
+            ctxDino.fillRect(obstacle.x, obstacle.y, obstacle.width, obstacle.height);
+        }
+
+        function updateDino() {
+            if (!dino.onGround) { dino.dy += dino.gravity; dino.y += dino.dy; }
+            if (dino.y + dino.height >= dinoGameCanvas.height -10 ) { 
+                dino.y = dinoGameCanvas.height - dino.height -10; dino.dy = 0; dino.onGround = true;
+            }
+        }
+
+        function generateObstacle() {
+            let isAerial = false;
+            if (dinoScore > 1700 && Math.random() < 0.33) { 
+                isAerial = true;
+            }
+
+            const obstacleHeight = FIXED_OBSTACLE_HEIGHT; // Use fixed height
+            const obstacleWidth = FIXED_OBSTACLE_WIDTH;   // Use fixed width
+            let obstacleY;
+
+            if (isAerial) {
+                obstacleY = dinoGameCanvas.height - 70 - (Math.random() * 30); // Position aerial obstacles higher
+                obstacleY = Math.max(20, obstacleY); // Ensure it's not too high
+                obstacleY = Math.min(dinoGameCanvas.height - dino.height - obstacleHeight - 20, obstacleY); 
+            } else {
+                obstacleY = dinoGameCanvas.height - obstacleHeight - 10; // Ground obstacle
+            }
+
+            obstacles.push({ 
+                x: dinoGameCanvas.width, 
+                y: obstacleY, 
+                width: obstacleWidth, 
+                height: obstacleHeight,
+                isAerial: isAerial 
+            });
+        }
+
+        function updateObstacles() {
+            for (let i = obstacles.length - 1; i >= 0; i--) {
+                obstacles[i].x -= dinoGameSpeed;
+                if (obstacles[i].x + obstacles[i].width < 0) obstacles.splice(i, 1); 
+            }
+        }
+        
+        function checkCollision() {
+            for (const o of obstacles) {
+                if (dino.x < o.x + o.width && dino.x + dino.width > o.x && dino.y < o.y + o.height && dino.y + dino.height > o.y) return true;
+            } return false;
+        }
+
+        function dinoGameLoop() {
+            if (!gameActive) {
+                 statusElement.textContent = `بازی تمام! امتیاز نهایی: ${dinoScore}`;
+                 showModal(messageBoxModal, `بازی تمام! امتیاز نهایی: ${dinoScore}`); return;
+            }
+            ctxDino.clearRect(0, 0, dinoGameCanvas.width, dinoGameCanvas.height);
+            ctxDino.strokeStyle = '#a1a1aa'; ctxDino.beginPath(); ctxDino.moveTo(0, dinoGameCanvas.height - 10);
+            ctxDino.lineTo(dinoGameCanvas.width, dinoGameCanvas.height - 10); ctxDino.stroke();
+            updateDino(); drawDino();
+            dinoFrameCount++;
+
+            let obstacleIntervalBase;
+            let obstacleMinInterval;
+            let obstacleScoreDivisor;
+            let currentTargetSpeed;
+            
+            if (dinoScore <= 2500) {
+                obstacleIntervalBase = 150; // Slightly more spacing for easier phase
+                obstacleMinInterval = 42;   // Slightly more min spacing
+                obstacleScoreDivisor = 75; 
+                currentTargetSpeed = 4.2; 
+                if (dinoFrameCount % 480 === 0 && dinoGameSpeed < currentTargetSpeed) { 
+                     dinoGameSpeed += 0.05;
+                }
+            } else {
+                obstacleIntervalBase = 130; 
+                obstacleMinInterval = 30;   
+                obstacleScoreDivisor = 38; 
+                currentTargetSpeed = 7.8;  
+                 if (dinoFrameCount % 330 === 0 && dinoGameSpeed < currentTargetSpeed) { 
+                     dinoGameSpeed += 0.13;
+                }
+            }
+            dinoGameSpeed = Math.min(dinoGameSpeed, currentTargetSpeed);
+
+            if (dinoFrameCount % (Math.max(obstacleMinInterval, obstacleIntervalBase - Math.floor(dinoScore / obstacleScoreDivisor))) === 0) {
+                generateObstacle();
+            }
+            
+            updateObstacles(); obstacles.forEach(drawObstacle);
+            if (checkCollision()) gameActive = false; 
+            else {
+                dinoScore++; dinoScoreDisplay.textContent = `امتیاز: ${dinoScore}`;
+                dinoGameLoopId = requestAnimationFrame(dinoGameLoop);
+            }
+            if (!gameActive) { 
+                statusElement.textContent = `بازی تمام! امتیاز نهایی: ${dinoScore}`;
+                showModal(messageBoxModal, `بازی تمام! امتیاز نهایی: ${dinoScore}`); 
+            }
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (currentGameType === 'Dino' && e.code === 'Space' && dino.onGround && gameActive) {
+                dino.dy = dino.jumpPower; dino.onGround = false;
+            }
+        });
+        dinoGameCanvas.addEventListener('click', () => {
+             if (currentGameType === 'Dino' && dino.onGround && gameActive) {
+                dino.dy = dino.jumpPower; dino.onGround = false;
+            }
+        });
 
 
         // --- Make Move (TTT/Gomoku) ---
@@ -731,12 +888,10 @@
             if (bestMoveIndex !== -1) {
                 tttgMakeMove(bestMoveIndex, aiPlayerSymbol);
                 if (tttgCheckWin(aiPlayerSymbol)) {
-                    endGame(`هوش مصنوعی (${aiPlayerSymbol}) برنده شد!`);
-                    setBoardDisabled(true); return;
+                    endGame(`هوش مصنوعی (${aiPlayerSymbol}) برنده شد!`); return;
                 }
                 if (tttgIsBoardFull()) {
-                    endGame('بازی مساوی شد!');
-                    setBoardDisabled(true); return;
+                    endGame('بازی مساوی شد!'); return;
                 }
             }
             currentPlayer = humanPlayerSymbol;
@@ -754,8 +909,8 @@
         function minimax_TTTG(currentBoard, depth, isMaximizingPlayer, alpha, beta) {
             const score = evaluateBoardForMinimax_TTTG(currentBoard);
             if (score !== null) return score;
-            let maxDepth = (tttgBoardSize === 3) ? 9 : (tttgBoardSize === 5 ? 3 : 1); // Deeper for 3x3
-            if (depth >= maxDepth * 2) return 0;
+            let maxDepth = (tttgBoardSize === 3) ? 9 : (tttgBoardSize === 5 ? 4 : 2); 
+            if (depth >= maxDepth) return 0; 
 
             if (isMaximizingPlayer) { 
                 let bestScore = -Infinity;
@@ -803,57 +958,94 @@
             }
             return move;
         }
-
+        
         // --- UI and Game Flow ---
-        function endGame(message) {
+        function endGame(message) { 
             gameActive = false;
-            showModal(message);
-            if (currentGameType !== 'SnakesLadders') setBoardDisabled(true); 
-            else rollDiceButton.disabled = true;
+            showModal(messageBoxModal, message); 
+            if (currentGameType !== 'SnakesLadders' && currentGameType !== 'Dino' ) { 
+                setBoardDisabled(true); 
+            } else if (currentGameType === 'SnakesLadders') {
+                rollDiceButton.disabled = true;
+            }
         }
         
-        function showModal(message) {
-            messageText.textContent = message;
-            messageBox.classList.remove('hidden');
-            overlay.classList.remove('hidden');
+        function showModal(modalElement, messageContent) {
+            if (modalElement === messageBoxModal) {
+                messageText.textContent = messageContent;
+            }
+            if (modalElement) { 
+                 modalElement.classList.remove('hidden');
+            }
+            if (overlay) { 
+                overlay.classList.remove('hidden');
+            }
         }
-        function hideModal() {
-            messageBox.classList.add('hidden');
-            overlay.classList.add('hidden');
+        function hideModal(modalElement) {
+            if (modalElement) { 
+                modalElement.classList.add('hidden');
+            }
+            if (overlay) { 
+                 overlay.classList.add('hidden');
+            }
+        }
+        
+        function displayGameInstructions() {
+            instructionsGameTitle.innerHTML = ""; 
+            instructionsGameRules.innerHTML = ""; 
+            instructionsGameList.innerHTML = ""; 
+            gameInstructionsContainer.classList.add('hidden'); 
+
+            let gameName = ""; let rules = ""; let listItems = [];
+            switch(currentGameType) {
+                case 'Gomoku9':
+                    gameName = "گوموکو"; rules = "هدف: قرار دادن ۵ مهره متوالی (افقی، عمودی، مورب).";
+                    gameInstructionsContainer.classList.remove('hidden'); break;
+                case 'SnakesLadders':
+                    gameName = "مار و پله"; rules = "هدف: رسیدن به خانه ۱۰۰.";
+                    listItems = ["با تاس حرکت کنید.", "نردبان‌ها شما را بالا می‌برند.", "مارها شما را پایین می‌آورند."];
+                    gameInstructionsContainer.classList.remove('hidden'); break;
+                case 'TTT3': case 'TTT5':
+                     gameName = `دوز ${tttgBoardSize}×${tttgBoardSize}`;
+                     rules = `هدف: قرار دادن ${tttgWinStreak} مهره متوالی.`;
+                     gameInstructionsContainer.classList.remove('hidden'); break; 
+                case 'Dino':
+                     gameName = "بازی دایناسور"; rules = "برای پرش از موانع، فاصله یا کلیک را بزنید.";
+                     gameInstructionsContainer.classList.remove('hidden'); break;
+                default: return;
+            }
+            instructionsGameTitle.textContent = `راهنمای: ${gameName}`;
+            instructionsGameRules.textContent = rules;
+            listItems.forEach(item => {
+                const li = document.createElement('li'); li.textContent = item;
+                instructionsGameList.appendChild(li);
+            });
         }
 
         function updateActiveButtonStyles() {
             vsAIButton.classList.toggle('active', gameMode === 'vsAI');
             vsPlayerButton.classList.toggle('active', gameMode === 'vsPlayer');
-            
             gameTypeTTT3Button.classList.toggle('active', currentGameType === 'TTT3');
             gameTypeTTT5Button.classList.toggle('active', currentGameType === 'TTT5');
             gameTypeGomoku9Button.classList.toggle('active', currentGameType === 'Gomoku9');
             gameTypeSnakesLaddersButton.classList.toggle('active', currentGameType === 'SnakesLadders');
+            gameTypeDinoButton.classList.toggle('active', currentGameType === 'Dino');
         }
 
         // --- Event Listeners ---
         restartButton.addEventListener('click', initializeGame);
-        closeMessageButton.addEventListener('click', hideModal);
-        overlay.addEventListener('click', hideModal);
+        closeMessageButton.addEventListener('click', () => hideModal(messageBoxModal));
+        overlay.addEventListener('click', () => hideModal(messageBoxModal));
 
         vsAIButton.addEventListener('click', () => { gameMode = 'vsAI'; initializeGame(); });
         vsPlayerButton.addEventListener('click', () => { gameMode = 'vsPlayer'; initializeGame(); });
         
-        gameTypeTTT3Button.addEventListener('click', () => {
-            currentGameType = 'TTT3'; tttgBoardSize = 3; tttgWinStreak = 3; initializeGame();
-        });
-        gameTypeTTT5Button.addEventListener('click', () => {
-            currentGameType = 'TTT5'; tttgBoardSize = 5; tttgWinStreak = 4; initializeGame();
-        });
-        gameTypeGomoku9Button.addEventListener('click', () => { 
-            currentGameType = 'Gomoku9'; tttgBoardSize = 9; tttgWinStreak = 5; initializeGame();
-        });
-        gameTypeSnakesLaddersButton.addEventListener('click', () => {
-            currentGameType = 'SnakesLadders'; initializeGame();
-        });
-
-        // --- Initial Game Setup ---
+        gameTypeTTT3Button.addEventListener('click', () => { currentGameType = 'TTT3'; tttgBoardSize = 3; tttgWinStreak = 3; initializeGame(); });
+        gameTypeTTT5Button.addEventListener('click', () => { currentGameType = 'TTT5'; tttgBoardSize = 5; tttgWinStreak = 4; initializeGame(); });
+        gameTypeGomoku9Button.addEventListener('click', () => {  currentGameType = 'Gomoku9'; tttgBoardSize = 9; tttgWinStreak = 5; initializeGame(); });
+        gameTypeSnakesLaddersButton.addEventListener('click', () => { currentGameType = 'SnakesLadders'; initializeGame(); });
+        gameTypeDinoButton.addEventListener('click', () => { currentGameType = 'Dino'; initializeGame(); });
+        
         initializeGame(); 
     </script>
 </body>
