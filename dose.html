@@ -1,38 +1,35 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بازی دوز با هوش مصنوعی (۳×۳ و ۵×۵)</title>
+    <title>مجموعه بازی‌های پیشرفته</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --player-x-color: #e11d48; /* Rose 600 */
+            --player-o-color: #2563eb; /* Blue 600 */
+            --player-1-token-color: #f59e0b; /* Amber 500 */
+            --player-2-token-color: #10b981; /* Emerald 500 */
+            --ai-token-color: #6366f1; /* Indigo 500 */
+        }
         body {
             font-family: 'Vazirmatn', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
-            /* Align to top */
+            justify-content: flex-start; 
             min-height: 100vh;
-            background-color: #f3f4f6;
-            /* Fallback color */
-            background-image: url('p1.jpg');
-            /* نام فایل آپلود شده شما */
-            background-size: cover;
-            /* پوشش کامل صفحه */
-            background-position: center;
-            /* تصویر در مرکز */
-            background-repeat: no-repeat;
-            /* جلوگیری از تکرار تصویر */
-            background-attachment: fixed;
-            /* ثابت ماندن پس‌زمینه هنگام اسکرول */
+            background-color: #f0f9ff; /* Sky 50 */
+            background-image: url('0bc0ef3ccc2005cc601f1d983a3e4f82.jpg');
+            background-size: cover; 
+            background-position: center; 
+            background-repeat: no-repeat; 
+            background-attachment: fixed; 
             margin: 0;
-            padding: 1rem;
+            padding: 0.5rem;
         }
-
-        /* افزودن یک لایه نیمه‌شفاف روی پس‌زمینه برای خوانایی بهتر محتوا */
         body::before {
             content: "";
             position: fixed;
@@ -40,257 +37,293 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(255, 255, 255, 0.3);
-            /* رنگ سفید با شفافیت 30% */
-            z-index: -1;
-            /* قرار گرفتن لایه زیر محتوا */
+            background-color: rgba(255, 255, 255, 0.55); /* افزایش شفافیت برای خوانایی بهتر */
+            z-index: -1; 
         }
-
-        .credits {
-            font-size: 0.9rem;
-            color: #374151;
-            /* Tailwind gray-700 - کمی تیره‌تر برای خوانایی روی پس‌زمینه */
-            text-align: center;
-            margin-bottom: 1rem;
-            padding: 0.75rem;
-            /* کمی پدینگ بیشتر */
-            background-color: rgba(229, 231, 235, 0.85);
-            /* Tailwind gray-200 with opacity */
-            border-radius: 8px;
-            /* گردی بیشتر */
-            max-width: 90%;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .credits a {
-            color: #1d4ed8;
-            /* Tailwind blue-700 */
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .credits a:hover {
-            text-decoration: underline;
-        }
-
-        .size-selector {
-            margin-bottom: 1rem;
+        .container {
             display: flex;
-            gap: 0.75rem;
-            /* افزایش فاصله */
-            background-color: rgba(255, 255, 255, 0.7);
-            padding: 0.5rem;
-            border-radius: 8px;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 600px; /* افزایش برای مار و پله */
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.9); 
+            border-radius: 16px; /* گردی بیشتر */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
         }
+        .credits {
+            font-size: 0.85rem; 
+            color: #374151; 
+            text-align: center;
+            margin-bottom: 0.75rem;
+            padding: 0.6rem; 
+            background-color: rgba(229, 231, 235, 0.92); 
+            border-radius: 8px; 
+            width: calc(100% - 1.5rem); 
+        }
+        .credits a { color: #1d4ed8; text-decoration: none; font-weight: 600; }
+        .credits a:hover { text-decoration: underline; }
 
-        .size-selector button {
-            background-color: #60a5fa;
-            /* Tailwind blue-400 */
+        .selectors-container {
+            display: flex;
+            flex-direction: column; 
+            gap: 0.6rem; 
+            margin-bottom: 0.75rem;
+            width: 100%;
+            align-items: center;
+        }
+        .game-mode-selector, .game-type-selector { /* تغییر نام size-selector */
+            display: flex;
+            flex-wrap: wrap; 
+            gap: 0.5rem; 
+            background-color: rgba(229, 231, 235, 0.88); 
+            padding: 0.4rem;
+            border-radius: 8px;
+            justify-content: center;
+        }
+        .game-mode-selector button, .game-type-selector button {
+            background-color: #38bdf8; /* Sky 400 */
             color: white;
-            padding: 10px 18px;
-            /* پدینگ بیشتر */
-            font-size: 0.95rem;
-            /* کمی بزرگتر */
+            padding: 8px 12px; /* کمی کوچکتر برای جای‌گیری بیشتر */
+            font-size: 0.8rem; 
             border-radius: 6px;
             border: none;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            transition: background-color 0.2s ease, box-shadow 0.2s ease;
         }
-
-        .size-selector button.active {
-            background-color: #2563eb;
-            /* Tailwind blue-600 */
+        .game-mode-selector button.active, .game-type-selector button.active {
+            background-color: #0284c7; /* Sky 600 */
             font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.15);
         }
-
+        .main-title {
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.7rem 1.4rem;
+            border-radius: 10px;
+            margin-bottom: 0.75rem; 
+            text-align: center;
+            font-size: 1.7rem; 
+        }
+        .status {
+            font-size: 1.25rem; 
+            margin-bottom: 0.75rem;
+            color: #1e293b; /* Slate 800 */
+            text-align: center;
+            min-height: 2.1rem; 
+            background-color: rgba(241, 245, 249, 0.95); /* Slate 100 */
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            font-weight: 600;
+            width: calc(100% - 1.5rem);
+        }
+        .board-area { /* محفظه کلی برای تخته بازی و کنترل‌های مرتبط */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
         .board-container {
-            margin-bottom: 20px;
+            margin-bottom: 15px; 
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 10px;
-            background-color: rgba(255, 255, 255, 0.6);
-            /* پس‌زمینه نیمه‌شفاف برای برد */
-            border-radius: 12px;
+            padding: 8px; 
+            background-color: rgba(203, 213, 225, 0.88); /* Slate 300 */
+            border-radius: 10px; 
         }
-
         .board {
             display: grid;
-            gap: 5px;
-            background-color: #d1d5db;
-            padding: 5px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .board.size-3x3 {
-            grid-template-columns: repeat(3, 1fr);
-            width: 300px;
-            height: 300px;
-        }
-
-        .board.size-5x5 {
-            grid-template-columns: repeat(5, 1fr);
-            width: 330px;
-            height: 330px;
-        }
-
-        .cell {
-            background-color: #ffffff;
-            border: 1px solid #9ca3af;
+            background-color: transparent; 
+            padding: 3px;
             border-radius: 6px;
+            position: relative; /* برای مار و پله */
+        }
+        /* Tic-Tac-Toe & Gomoku Boards */
+        .board.type-tictactoe.size-3x3 { grid-template-columns: repeat(3, 1fr); width: 220px; height: 220px; gap: 4px;}
+        .board.type-tictactoe.size-5x5 { grid-template-columns: repeat(5, 1fr); width: 260px; height: 260px; gap: 3px;}
+        .board.type-gomoku.size-9x9 { grid-template-columns: repeat(9, 1fr); width: 324px; height: 324px; gap: 2px;}
+        
+        /* Snakes and Ladders Board */
+        .board.type-snakesladders {
+            grid-template-columns: repeat(10, 1fr);
+            grid-template-rows: repeat(10, 1fr);
+            width: 380px; /* اندازه مناسب برای ۱۰×۱۰ */
+            height: 380px;
+            border: 2px solid #94a3b8; /* Slate 400 */
+            background-color: #e0f2fe; /* Sky 100 - پس زمینه روشن برای تخته */
+            gap: 1px;
+        }
+        .sl-cell {
+            border: 1px solid #cbd5e1; /* Slate 300 */
+            display: flex;
+            flex-direction: column; /* برای شماره و مهره‌ها */
+            align-items: center;
+            justify-content: space-between; /* شماره بالا، مهره‌ها پایین */
+            font-weight: bold;
+            position: relative; /* برای مهره‌ها */
+            padding: 2px;
+            background-color: #f0f9ff; /* Sky 50 */
+        }
+        .sl-cell:nth-child(odd) { background-color: #e0f2fe; /* Sky 100 */ }
+
+        .sl-cell-number {
+            font-size: 0.6rem;
+            color: #64748b; /* Slate 500 */
+            align-self: flex-start; /* شماره در گوشه بالا */
+        }
+        .sl-player-tokens {
+            display: flex;
+            gap: 2px;
+            position: absolute;
+            bottom: 2px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .sl-player-token {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            border: 1px solid black;
+        }
+        .sl-player-token.p1 { background-color: var(--player-1-token-color); }
+        .sl-player-token.p2 { background-color: var(--player-2-token-color); }
+        .sl-player-token.ai { background-color: var(--ai-token-color); }
+
+        /* Visuals for Snakes and Ladders (Simplified with colored cells) */
+        .sl-snake-head { background-color: #fda4af !important; /* Rose 300 */ }
+        .sl-snake-tail { background-color: #fecaca !important; /* Rose 200 */ }
+        .sl-ladder-bottom { background-color: #86efac !important; /* Green 300 */ }
+        .sl-ladder-top { background-color: #bbf7d0 !important; /* Green 200 */ }
+
+        /* Tic-Tac-Toe & Gomoku Cells */
+        .cell {
+            background-color: rgba(255, 255, 255, 0.97); 
+            border: 1px solid #b0b0b0; 
+            border-radius: 4px; 
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
             cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            transition: background-color 0.2s ease, transform 0.1s ease;
             color: #374151;
         }
-
-        .cell:hover:not(.occupied) {
-            background-color: #e0f2fe;
-            /* Tailwind sky-100 */
-            transform: scale(1.05);
+        .cell:hover:not(.occupied):not(.disabled) {
+            background-color: #d6eeff; 
+            transform: scale(1.03);
         }
+        .cell.disabled { cursor: not-allowed; background-color: #e8e8e8; }
+        .board.type-tictactoe.size-3x3 .cell { font-size: 2.3rem; } 
+        .board.type-tictactoe.size-5x5 .cell { font-size: 1.4rem; }
+        .board.type-gomoku.size-9x9 .cell { font-size: 0.9rem; } 
 
-        .board.size-3x3 .cell {
-            font-size: 3rem;
-        }
+        .cell.x { color: var(--player-x-color); } 
+        .cell.o { color: var(--player-o-color); } 
+        .cell.occupied { cursor: not-allowed; }
 
-        .board.size-5x5 .cell {
-            font-size: 1.8rem;
-        }
-
-        .cell.x {
-            color: #ef4444;
-        }
-
-        .cell.o {
-            color: #3b82f6;
-        }
-
-        .cell.occupied {
-            cursor: not-allowed;
-        }
-
-        .status {
-            font-size: 1.6rem;
-            /* کمی بزرگتر */
-            margin-bottom: 1rem;
-            color: #111827;
-            /* Tailwind gray-900 - تیره‌تر برای خوانایی */
-            text-align: center;
-            min-height: 2.25rem;
-            background-color: rgba(243, 244, 246, 0.8);
-            /* Tailwind gray-100 with opacity */
-            padding: 0.5rem 1rem;
+        /* Dice Area for Snakes and Ladders */
+        .dice-area {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background-color: rgba(229, 231, 235, 0.9);
             border-radius: 8px;
-            font-weight: 600;
+            width: calc(100% - 1.5rem);
         }
+        .dice-display {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #1e3a8a; /* Blue 800 */
+            background-color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 6px;
+            min-width: 60px;
+            text-align: center;
+            border: 2px solid #93c5fd; /* Blue 300 */
+        }
+        #rollDiceButton {
+            background-color: #fb923c; /* Orange 400 */
+            color: white;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 6px;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #rollDiceButton:hover { background-color: #f97316; /* Orange 500 */ }
+        #rollDiceButton:disabled { background-color: #fdba74; /* Orange 300 */ cursor: not-allowed;}
+
 
         #restartButton {
-            background-color: #10b981;
+            background-color: #0f766e; 
             color: white;
-            padding: 14px 28px;
-            /* پدینگ بیشتر */
-            font-size: 1.15rem;
-            /* کمی بزرگتر */
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            padding: 12px 24px; font-size: 1.05rem; 
+            border: none; border-radius: 8px; cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: auto; 
+            margin-top: 1rem; /* فاصله از پایین‌ترین المان */
         }
-
-        #restartButton:hover {
-            background-color: #059669;
-            transform: translateY(-2px);
-        }
-
+        #restartButton:hover { background-color: #0d655d; transform: translateY(-1px); }
         .message-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
+            position: fixed; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background-color: white;
-            padding: 35px;
-            border-radius: 12px;
-            /* پدینگ و گردی بیشتر */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-            z-index: 1000;
-            text-align: center;
-            border: 1px solid #e5e7eb;
-            width: 90%;
-            max-width: 420px;
-            /* کمی عریض‌تر */
+            background-color: white; padding: 30px; border-radius: 10px; 
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); z-index: 1000;
+            text-align: center; border: 1px solid #e0e0e0;
+            width: 90%; max-width: 400px; 
         }
-
-        .message-box h2 {
-            font-size: 1.85rem;
-            margin-bottom: 18px;
-            color: #111827;
-        }
-
+        .message-box h2 { font-size: 1.7rem; margin-bottom: 15px; color: #111827; }
         .message-box button {
-            margin-top: 22px;
-            background-color: #3b82f6;
-            color: white;
-            padding: 12px 24px;
-            font-size: 1.05rem;
-            border-radius: 8px;
-            border: none;
+            margin-top: 20px; background-color: #3b82f6; color:white;
+            padding: 10px 20px; font-size: 1rem; border-radius: 6px;
+            border:none;
         }
-
-        .message-box button:hover {
-            background-color: #2563eb;
-        }
-
+        .message-box button:hover { background-color: #1e40af; } 
         .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.65);
-            z-index: 999;
-            /* کمی تیره‌تر */
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.72); z-index: 999; 
         }
-
-        .hidden {
-            display: none;
-        }
-
-        /* عنوان اصلی بازی */
-        .main-title {
-            background-color: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 0.5rem 1.5rem;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-            /* فاصله از انتخابگر اندازه */
-        }
+        .hidden { display: none; }
     </style>
 </head>
-
 <body>
-    <div class="credits">
-        طراحی شده توسط SxCd و برای ارتباط با ایدی تلگرامی <a href="https://t.me/jams047" target="_blank"
-            rel="noopener noreferrer">@jams047</a> در ارتباط باشید
-    </div>
-    <h1 class="text-4xl font-bold main-title mb-4">بازی دوز (۳×۳ و ۵×۵)</h1>
-
-    <div class="size-selector">
-        <button id="size3x3Button" class="active">بازی ۳×۳ (۳ تایی)</button>
-        <button id="size5x5Button">بازی ۵×۵ (۴ تایی)</button>
-    </div>
-
-    <div id="status" class="status">نوبت شما (X)</div>
-    <div class="board-container">
-        <div id="board" class="board size-3x3">
+    <div class="container">
+        <div class="credits">
+            طراحی شده توسط SxCd. ارتباط از طریق <a href="https://t.me/jams047" target="_blank" rel="noopener noreferrer">@jams047</a>
         </div>
+        <h1 class="text-4xl font-bold main-title">مجموعه بازی‌های پیشرفته</h1>
+
+        <div class="selectors-container">
+            <div class="game-mode-selector">
+                <button id="vsAIButton" class="active">بازی با هوش مصنوعی</button>
+                <button id="vsPlayerButton">بازی دونفره</button>
+            </div>
+            <div class="game-type-selector"> <button id="gameTypeTTT3" class="active">دوز ۳×۳</button>
+                <button id="gameTypeTTT5">دوز ۵×۵</button>
+                <button id="gameTypeGomoku9">گوموکو ۹×۹</button>
+                <button id="gameTypeSnakesLadders">مار و پله ۱۰×۱۰</button>
+            </div>
+        </div>
+
+        <div id="status" class="status">نوبت شما (X)</div>
+        
+        <div class="board-area">
+            <div class="board-container">
+                <div id="board" class="board type-tictactoe size-3x3">
+                    </div>
+            </div>
+            <div id="diceArea" class="dice-area hidden">
+                <div id="diceDisplay" class="dice-display">0</div>
+                <button id="rollDiceButton">پرتاب تاس</button>
+            </div>
+        </div>
+        <button id="restartButton">شروع مجدد</button>
     </div>
-    <button id="restartButton">شروع مجدد</button>
 
     <div id="messageBox" class="message-box hidden">
         <h2 id="messageText"></h2>
@@ -299,6 +332,7 @@
     <div id="overlay" class="overlay hidden"></div>
 
     <script>
+        // --- DOM Elements ---
         const boardElement = document.getElementById('board');
         const statusElement = document.getElementById('status');
         const restartButton = document.getElementById('restartButton');
@@ -306,256 +340,521 @@
         const messageText = document.getElementById('messageText');
         const closeMessageButton = document.getElementById('closeMessageButton');
         const overlay = document.getElementById('overlay');
-        const size3x3Button = document.getElementById('size3x3Button');
-        const size5x5Button = document.getElementById('size5x5Button');
+        
+        const vsAIButton = document.getElementById('vsAIButton');
+        const vsPlayerButton = document.getElementById('vsPlayerButton');
+        const gameTypeTTT3Button = document.getElementById('gameTypeTTT3');
+        const gameTypeTTT5Button = document.getElementById('gameTypeTTT5');
+        const gameTypeGomoku9Button = document.getElementById('gameTypeGomoku9');
+        const gameTypeSnakesLaddersButton = document.getElementById('gameTypeSnakesLadders');
 
-        const PLAYER_X = 'X';
-        const PLAYER_O = 'O'; // AI player
-        let currentPlayer = PLAYER_X;
-        let boardState = [];
+        const diceAreaElement = document.getElementById('diceArea');
+        const diceDisplayElement = document.getElementById('diceDisplay');
+        const rollDiceButton = document.getElementById('rollDiceButton');
+
+        // --- Game Constants ---
+        const PLAYER_X = 'X'; // For TTT/Gomoku
+        const PLAYER_O = 'O'; // For TTT/Gomoku
+        const SL_PLAYER_1 = 'P1'; // For Snakes & Ladders
+        const SL_PLAYER_2 = 'P2'; // For Snakes & Ladders
+        const SL_AI_PLAYER = 'AI';
+
+
+        // --- Game State Variables ---
+        let humanPlayerSymbol = PLAYER_X; // TTT/Gomoku
+        let aiPlayerSymbol = PLAYER_O;    // TTT/Gomoku
+        let slHumanPlayer = SL_PLAYER_1;
+        let slAiPlayer = SL_AI_PLAYER;
+
+
+        let currentPlayer;
+        let boardState = []; // For TTT/Gomoku
+        let slPlayerPositions = {}; // For Snakes & Ladders {P1: 0, P2: 0} or {P1:0, AI:0}
+
         let gameActive = true;
+        let currentGameType = 'TTT3'; // TTT3, TTT5, Gomoku9, SnakesLadders
+        let gameMode = 'vsAI'; // vsAI, vsPlayer
+        
+        let tttgBoardSize = 3; // TicTacToe/Gomoku board size
+        let tttgWinStreak = 3; // TicTacToe/Gomoku win streak
+        let tttgWinningCombinations = [];
 
-        let currentBoardSize = 3;
-        let currentWinStreak = 3;
-        let winningCombinations = [];
-
-        // --- Firebase Setup (Placeholder) ---
-        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "YOUR_API_KEY", authDomain: "YOUR_AUTH_DOMAIN", projectId: "YOUR_PROJECT_ID" };
-        const appId = typeof __app_id !== 'undefined' ? __app_id : 'tic-tac-toe-ai-multisize-default';
-        // --- End Firebase Setup ---
-
-        function generateWinningCombinations(boardSize, streakSize) {
+        const SL_BOARD_SIZE = 100;
+        const slSnakesAndLadders = { // مقصد : مبدا
+            // نردبان‌ها (مقصد > مبدا)
+            4: 14, 9: 31, 20: 38, 28: 84, 40: 59, 51: 67, 63: 81, 71: 91,
+            // مارها (مقصد < مبدا)
+            17: 7, 54: 34, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 99: 78
+        };
+        
+        // --- Winning Combinations Generation (TTT/Gomoku) ---
+        function generateTttgWinningCombinations(boardSize, streakSize) {
+            // ... (کد قبلی بدون تغییر باقی می‌ماند) ...
             const combinations = [];
-            // Horizontal
-            for (let r = 0; r < boardSize; r++) {
+            for (let r = 0; r < boardSize; r++) { 
                 for (let c = 0; c <= boardSize - streakSize; c++) {
-                    const combo = [];
-                    for (let k = 0; k < streakSize; k++) combo.push(r * boardSize + (c + k));
+                    const combo = []; for (let k = 0; k < streakSize; k++) combo.push(r * boardSize + (c + k));
                     combinations.push(combo);
                 }
             }
-            // Vertical
-            for (let c = 0; c < boardSize; c++) {
+            for (let c = 0; c < boardSize; c++) { 
                 for (let r = 0; r <= boardSize - streakSize; r++) {
-                    const combo = [];
-                    for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + c);
+                    const combo = []; for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + c);
                     combinations.push(combo);
                 }
             }
-            // Diagonal (top-left to bottom-right)
-            for (let r = 0; r <= boardSize - streakSize; r++) {
+            for (let r = 0; r <= boardSize - streakSize; r++) { 
                 for (let c = 0; c <= boardSize - streakSize; c++) {
-                    const combo = [];
-                    for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + (c + k));
+                    const combo = []; for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + (c + k));
                     combinations.push(combo);
                 }
             }
-            // Diagonal (top-right to bottom-left)
-            for (let r = 0; r <= boardSize - streakSize; r++) {
+            for (let r = 0; r <= boardSize - streakSize; r++) { 
                 for (let c = streakSize - 1; c < boardSize; c++) {
-                    const combo = [];
-                    for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + (c - k));
+                    const combo = []; for (let k = 0; k < streakSize; k++) combo.push((r + k) * boardSize + (c - k));
                     combinations.push(combo);
                 }
             }
             return combinations;
         }
 
-        function initializeGame(boardSize, winStreak) {
-            currentBoardSize = boardSize;
-            currentWinStreak = winStreak;
-            winningCombinations = generateWinningCombinations(currentBoardSize, currentWinStreak);
-
-            boardElement.className = 'board';
-            boardElement.classList.add(`size-${boardSize}x${boardSize}`);
-
-            boardState = Array(currentBoardSize * currentBoardSize).fill(null);
-            currentPlayer = PLAYER_X;
+        // --- Game Initialization ---
+        function initializeGame() {
             gameActive = true;
-
-            statusElement.textContent = 'نوبت شما (X)';
-            createBoard();
             hideModal();
+            updateActiveButtonStyles();
+            diceAreaElement.classList.add('hidden'); // Hide dice by default
 
-            if (boardSize === 3) {
-                size3x3Button.classList.add('active');
-                size5x5Button.classList.remove('active');
-            } else {
-                size5x5Button.classList.add('active');
-                size3x3Button.classList.remove('active');
+            if (currentGameType === 'SnakesLadders') {
+                initializeSnakesLaddersGame();
+            } else { // TTT or Gomoku
+                initializeTttgGame();
             }
         }
 
-        function createBoard() {
-            boardElement.innerHTML = '';
-            for (let i = 0; i < currentBoardSize * currentBoardSize; i++) {
+        function initializeTttgGame() {
+            tttgWinningCombinations = generateTttgWinningCombinations(tttgBoardSize, tttgWinStreak);
+            boardElement.className = 'board'; 
+            if (currentGameType === 'TTT3' || currentGameType === 'TTT5') boardElement.classList.add('type-tictactoe');
+            if (currentGameType === 'Gomoku9') boardElement.classList.add('type-gomoku');
+            boardElement.classList.add(`size-${tttgBoardSize}x${tttgBoardSize}`);
+            
+            boardState = Array(tttgBoardSize * tttgBoardSize).fill(null);
+            createTttgBoard();
+
+            if (gameMode === 'vsAI') {
+                const humanStarts = Math.random() < 0.5;
+                humanPlayerSymbol = PLAYER_X; 
+                aiPlayerSymbol = PLAYER_O;
+                if (humanStarts) {
+                    currentPlayer = humanPlayerSymbol;
+                    statusElement.textContent = `نوبت شما (${humanPlayerSymbol})`;
+                    setBoardDisabled(false);
+                } else {
+                    currentPlayer = aiPlayerSymbol;
+                    statusElement.textContent = `هوش مصنوعی (${aiPlayerSymbol}) شروع می‌کند...`;
+                    setBoardDisabled(true); 
+                    setTimeout(() => { if (gameActive) tttgAiMove(); }, 1000); 
+                }
+            } else { // vsPlayer
+                currentPlayer = PLAYER_X; 
+                statusElement.textContent = `نوبت بازیکن ${PLAYER_X}`;
+                setBoardDisabled(false);
+            }
+        }
+        
+        function initializeSnakesLaddersGame() {
+            boardElement.className = 'board type-snakesladders';
+            slPlayerPositions = {}; // Reset positions
+            diceAreaElement.classList.remove('hidden');
+            rollDiceButton.disabled = false;
+            diceDisplayElement.textContent = "0";
+
+            if (gameMode === 'vsAI') {
+                slHumanPlayer = SL_PLAYER_1;
+                slAiPlayer = SL_AI_PLAYER;
+                slPlayerPositions[slHumanPlayer] = 0;
+                slPlayerPositions[slAiPlayer] = 0;
+                const humanStarts = Math.random() < 0.5;
+                if (humanStarts) {
+                    currentPlayer = slHumanPlayer;
+                    statusElement.textContent = `نوبت شما (بازیکن ۱)`;
+                    rollDiceButton.disabled = false;
+                } else {
+                    currentPlayer = slAiPlayer;
+                    statusElement.textContent = `هوش مصنوعی شروع می‌کند...`;
+                    rollDiceButton.disabled = true;
+                    setTimeout(() => { if (gameActive) slAiTurn(); }, 1000);
+                }
+            } else { // vsPlayer
+                slPlayerPositions[SL_PLAYER_1] = 0;
+                slPlayerPositions[SL_PLAYER_2] = 0;
+                currentPlayer = SL_PLAYER_1;
+                statusElement.textContent = `نوبت بازیکن ۱`;
+                rollDiceButton.disabled = false;
+            }
+            drawSnakesLaddersBoard();
+        }
+        
+        function setBoardDisabled(disabled) { // For TTT/Gomoku
+            const cells = boardElement.querySelectorAll('.cell');
+            if (disabled) {
+                boardElement.classList.add('disabled'); 
+                cells.forEach(cell => cell.classList.add('disabled'));
+            } else {
+                boardElement.classList.remove('disabled');
+                cells.forEach(cell => cell.classList.remove('disabled'));
+            }
+        }
+
+        // --- Board Creation ---
+        function createTttgBoard() {
+            boardElement.innerHTML = ''; 
+            for (let i = 0; i < tttgBoardSize * tttgBoardSize; i++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
                 cell.dataset.index = i;
-                cell.addEventListener('click', handleCellClick);
+                cell.addEventListener('click', handleTttgCellClick);
                 boardElement.appendChild(cell);
             }
         }
 
-        function handleCellClick(event) {
-            if (!gameActive || currentPlayer === PLAYER_O) return;
+        function drawSnakesLaddersBoard() {
+            boardElement.innerHTML = '';
+            for (let i = SL_BOARD_SIZE; i >= 1; i--) { // Draw from 100 down to 1 for typical S&L layout
+                const cell = document.createElement('div');
+                cell.classList.add('sl-cell');
+                cell.dataset.square = i;
+
+                const cellNumber = document.createElement('span');
+                cellNumber.classList.add('sl-cell-number');
+                cellNumber.textContent = i;
+                cell.appendChild(cellNumber);
+
+                const tokensContainer = document.createElement('div');
+                tokensContainer.classList.add('sl-player-tokens');
+                cell.appendChild(tokensContainer);
+                
+                // Mark snakes and ladders visually (simple version)
+                if (slSnakesAndLadders[i]) {
+                    if (slSnakesAndLadders[i] < i) cell.classList.add('sl-snake-head');
+                    else cell.classList.add('sl-ladder-bottom');
+                } else {
+                    for (const start in slSnakesAndLadders) {
+                        if (slSnakesAndLadders[start] === i) {
+                             if (parseInt(start) > i) cell.classList.add('sl-snake-tail');
+                             else cell.classList.add('sl-ladder-top');
+                             break;
+                        }
+                    }
+                }
+                boardElement.appendChild(cell);
+            }
+            updateSlPlayerTokenPositions();
+        }
+        
+        function updateSlPlayerTokenPositions() {
+            // Clear all existing tokens
+            document.querySelectorAll('.sl-player-token').forEach(token => token.remove());
+
+            for (const player in slPlayerPositions) {
+                const position = slPlayerPositions[player];
+                if (position > 0) { // Only draw if on board
+                    const cellElement = boardElement.querySelector(`.sl-cell[data-square="${position}"]`);
+                    if (cellElement) {
+                        const tokensContainer = cellElement.querySelector('.sl-player-tokens');
+                        const tokenElement = document.createElement('div');
+                        tokenElement.classList.add('sl-player-token');
+                        if (player === SL_PLAYER_1) tokenElement.classList.add('p1');
+                        else if (player === SL_PLAYER_2) tokenElement.classList.add('p2');
+                        else if (player === SL_AI_PLAYER) tokenElement.classList.add('ai');
+                        tokensContainer.appendChild(tokenElement);
+                    }
+                }
+            }
+        }
+
+
+        // --- Player Interaction ---
+        function handleTttgCellClick(event) {
+            if (!gameActive || (gameMode === 'vsAI' && currentPlayer === aiPlayerSymbol)) return;
 
             const clickedCell = event.target;
+            if (clickedCell.classList.contains('disabled')) return;
+
             const cellIndex = parseInt(clickedCell.dataset.index);
+            if (boardState[cellIndex] !== null) return;
 
-            if (boardState[cellIndex] !== null || !gameActive) return;
+            tttgMakeMove(cellIndex, currentPlayer);
 
-            makeMove(cellIndex, PLAYER_X);
-
-            if (checkWin(PLAYER_X)) {
-                endGame(`شما (X) برنده شدید!`);
+            if (tttgCheckWin(currentPlayer)) {
+                let winnerName = '';
+                if (gameMode === 'vsAI') {
+                    winnerName = (currentPlayer === humanPlayerSymbol) ? `شما (${humanPlayerSymbol})` : `هوش مصنوعی (${aiPlayerSymbol})`;
+                } else {
+                    winnerName = `بازیکن ${currentPlayer}`;
+                }
+                endGame(`${winnerName} برنده شد!`);
                 return;
             }
-            if (isBoardFull()) {
+            if (tttgIsBoardFull()) {
                 endGame('بازی مساوی شد!');
                 return;
             }
 
-            currentPlayer = PLAYER_O;
-            statusElement.textContent = 'هوش مصنوعی (O) در حال فکر کردن...';
-            setTimeout(() => {
-                if (gameActive) aiMove();
-            }, 700 + Math.random() * 500);
+            if (gameMode === 'vsAI') {
+                currentPlayer = aiPlayerSymbol; 
+                statusElement.textContent = `هوش مصنوعی (${aiPlayerSymbol}) در حال فکر کردن...`;
+                setBoardDisabled(true);
+                setTimeout(() => { if (gameActive) tttgAiMove(); }, 300 + Math.random() * 400);
+            } else { 
+                currentPlayer = (currentPlayer === PLAYER_X) ? PLAYER_O : PLAYER_X;
+                statusElement.textContent = `نوبت بازیکن ${currentPlayer}`;
+            }
         }
 
-        function makeMove(index, player) {
-            if (index < 0 || index >= boardState.length || boardState[index] !== null) {
+        rollDiceButton.addEventListener('click', () => {
+            if (!gameActive || (gameMode === 'vsAI' && currentPlayer === slAiPlayer)) return;
+            
+            const diceValue = Math.floor(Math.random() * 6) + 1;
+            diceDisplayElement.textContent = diceValue;
+            rollDiceButton.disabled = true; // Disable until move is complete or next player's turn
+
+            slMoveCurrentPlayer(diceValue);
+        });
+
+        function slMoveCurrentPlayer(steps) {
+            let currentPosition = slPlayerPositions[currentPlayer];
+            let newPosition = currentPosition + steps;
+
+            statusElement.textContent = `${(gameMode === 'vsAI' && currentPlayer === slAiPlayer) ? 'هوش مصنوعی' : 'بازیکن ' + (currentPlayer === SL_PLAYER_1 ? '۱' : '۲')} تاس ${steps} آورد و از ${currentPosition || 'شروع'} به ${Math.min(newPosition, SL_BOARD_SIZE)} رفت.`;
+            
+            if (newPosition > SL_BOARD_SIZE) {
+                newPosition = SL_BOARD_SIZE - (newPosition - SL_BOARD_SIZE); // Bounce back rule
+            }
+             if (newPosition === SL_BOARD_SIZE) { // Exact win
+                slPlayerPositions[currentPlayer] = newPosition;
+                updateSlPlayerTokenPositions();
+                const winnerName = (gameMode === 'vsAI') ? (currentPlayer === slHumanPlayer ? 'شما (بازیکن ۱)' : 'هوش مصنوعی') : `بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
+                endGame(`${winnerName} برنده شد!`);
                 return;
             }
+
+
+            // Check for snakes or ladders
+            setTimeout(() => { // Delay to show initial move
+                let finalPosition = newPosition;
+                if (slSnakesAndLadders[newPosition]) {
+                    finalPosition = slSnakesAndLadders[newPosition];
+                    statusElement.textContent += (finalPosition < newPosition) ? ` وای! مار در خانه ${newPosition}! به ${finalPosition} سقوط کرد.` : ` عالی! نردبان در خانه ${newPosition}! به ${finalPosition} صعود کرد.`;
+                }
+                slPlayerPositions[currentPlayer] = finalPosition;
+                updateSlPlayerTokenPositions();
+
+                 if (finalPosition === SL_BOARD_SIZE) { // Win after snake/ladder
+                    const winnerName = (gameMode === 'vsAI') ? (currentPlayer === slHumanPlayer ? 'شما (بازیکن ۱)' : 'هوش مصنوعی') : `بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
+                    endGame(`${winnerName} برنده شد!`);
+                    return;
+                }
+
+                // Switch turns
+                if (gameMode === 'vsAI') {
+                    if (currentPlayer === slHumanPlayer) {
+                        currentPlayer = slAiPlayer;
+                        statusElement.textContent = `نوبت هوش مصنوعی...`;
+                        setTimeout(() => { if(gameActive) slAiTurn(); }, 1200);
+                    } else { // AI's turn just finished
+                        currentPlayer = slHumanPlayer;
+                        statusElement.textContent = `نوبت شما (بازیکن ۱)`;
+                        rollDiceButton.disabled = false;
+                    }
+                } else { // vsPlayer
+                    currentPlayer = (currentPlayer === SL_PLAYER_1) ? SL_PLAYER_2 : SL_PLAYER_1;
+                    statusElement.textContent = `نوبت بازیکن ${currentPlayer === SL_PLAYER_1 ? '۱' : '۲'}`;
+                    rollDiceButton.disabled = false;
+                }
+            }, 800);
+        }
+        
+        function slAiTurn() {
+            if (!gameActive) return;
+            const diceValue = Math.floor(Math.random() * 6) + 1;
+            diceDisplayElement.textContent = `AI: ${diceValue}`;
+            slMoveCurrentPlayer(diceValue);
+        }
+
+
+        // --- Make Move (TTT/Gomoku) ---
+        function tttgMakeMove(index, player) {
             boardState[index] = player;
             const cellElement = boardElement.children[index];
-            if (cellElement) {
+            if (cellElement) { 
                 cellElement.textContent = player;
                 cellElement.classList.add(player.toLowerCase());
                 cellElement.classList.add('occupied');
             }
         }
-
-        function aiMove() {
-            if (!gameActive) return;
-            let move = findBestMove();
-            if (move !== -1) {
-                makeMove(move, PLAYER_O);
-                if (checkWin(PLAYER_O)) {
-                    endGame(`هوش مصنوعی (O) برنده شد!`);
-                    return;
-                }
-                if (isBoardFull()) {
-                    endGame('بازی مساوی شد!');
-                    return;
-                }
-            } else {
-                const firstEmpty = boardState.findIndex(cell => cell === null);
-                if (firstEmpty !== -1) {
-                    makeMove(firstEmpty, PLAYER_O);
-                    if (checkWin(PLAYER_O)) {
-                        endGame(`هوش مصنوعی (O) برنده شد!`);
-                        return;
-                    }
-                    if (isBoardFull()) {
-                        endGame('بازی مساوی شد!');
-                        return;
-                    }
-                }
-            }
-            currentPlayer = PLAYER_X;
-            statusElement.textContent = 'نوبت شما (X)';
-        }
-
-        function findBestMove() {
-            for (let i = 0; i < boardState.length; i++) {
-                if (boardState[i] === null) {
-                    boardState[i] = PLAYER_O;
-                    if (checkWin(PLAYER_O, true)) {
-                        boardState[i] = null; return i;
-                    }
-                    boardState[i] = null;
-                }
-            }
-            for (let i = 0; i < boardState.length; i++) {
-                if (boardState[i] === null) {
-                    boardState[i] = PLAYER_X;
-                    if (checkWin(PLAYER_X, true)) {
-                        boardState[i] = null; return i;
-                    }
-                    boardState[i] = null;
-                }
-            }
-            if (currentBoardSize % 2 !== 0) {
-                const centerIndex = Math.floor(boardState.length / 2);
-                if (boardState[centerIndex] === null) return centerIndex;
-            }
-            const corners = [];
-            if (currentBoardSize > 1) {
-                corners.push(0);
-                corners.push(currentBoardSize - 1);
-                corners.push(currentBoardSize * (currentBoardSize - 1));
-                corners.push(currentBoardSize * currentBoardSize - 1);
-            }
-            const availableCorners = corners.filter(index => index < boardState.length && boardState[index] === null);
-            if (availableCorners.length > 0) return availableCorners[Math.floor(Math.random() * availableCorners.length)];
-
-            const emptyCells = [];
-            for (let i = 0; i < boardState.length; i++) if (boardState[i] === null) emptyCells.push(i);
-            if (emptyCells.length > 0) return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-
-            return -1;
-        }
-
-        function checkWin(player, isChecking = false) {
-            for (const combination of winningCombinations) {
-                if (combination.every(index => index < boardState.length && boardState[index] === player)) {
-                    if (!isChecking && gameActive) {
-                        combination.forEach(index => {
-                            if (boardElement.children[index]) {
-                                boardElement.children[index].style.backgroundColor = player === PLAYER_X ? '#fecaca' : '#bfdbfe';
-                            }
-                        });
-                    }
-                    return true;
-                }
+        
+        // --- Game Logic (Win/Draw Checks for TTT/Gomoku) ---
+        function tttgCheckWinPure(board, player, combinationsToCheck) {
+            for (const combination of combinationsToCheck) {
+                if (combination.every(index => board[index] === player)) return true;
             }
             return false;
         }
+        function tttgIsBoardFullPure(board) {
+            return board.every(cell => cell !== null);
+        }
+        function tttgCheckWin(player) { 
+            if (tttgCheckWinPure(boardState, player, tttgWinningCombinations)) {
+                if (gameActive) { 
+                    tttgWinningCombinations.forEach(combination => {
+                        if (combination.every(index => boardState[index] === player)) {
+                            combination.forEach(index => {
+                                if (boardElement.children[index]) {
+                                    boardElement.children[index].style.backgroundColor = player === PLAYER_X ? '#fecaca' : '#bfdbfe';
+                                }
+                            });
+                        }
+                    });
+                }
+                return true;
+            }
+            return false;
+        }
+        function tttgIsBoardFull() { return tttgIsBoardFullPure(boardState); }
 
-        function isBoardFull() {
-            return boardState.every(cell => cell !== null);
+        // --- AI Logic (Minimax for TTT/Gomoku) ---
+        function tttgAiMove() {
+            if (!gameActive) return;
+            const bestMoveIndex = findBestMoveAI_TTTG(boardState);
+            if (bestMoveIndex !== -1) {
+                tttgMakeMove(bestMoveIndex, aiPlayerSymbol);
+                if (tttgCheckWin(aiPlayerSymbol)) {
+                    endGame(`هوش مصنوعی (${aiPlayerSymbol}) برنده شد!`);
+                    setBoardDisabled(true); return;
+                }
+                if (tttgIsBoardFull()) {
+                    endGame('بازی مساوی شد!');
+                    setBoardDisabled(true); return;
+                }
+            }
+            currentPlayer = humanPlayerSymbol;
+            statusElement.textContent = `نوبت شما (${humanPlayerSymbol})`;
+            setBoardDisabled(false);
         }
 
+        function evaluateBoardForMinimax_TTTG(board) {
+            if (tttgCheckWinPure(board, aiPlayerSymbol, tttgWinningCombinations)) return 10;    
+            if (tttgCheckWinPure(board, humanPlayerSymbol, tttgWinningCombinations)) return -10; 
+            if (tttgIsBoardFullPure(board)) return 0;                                 
+            return null; 
+        }
+
+        function minimax_TTTG(currentBoard, depth, isMaximizingPlayer, alpha, beta) {
+            const score = evaluateBoardForMinimax_TTTG(currentBoard);
+            if (score !== null) return score;
+            let maxDepth = (tttgBoardSize === 3) ? 9 : (tttgBoardSize === 5 ? 3 : 1); // Deeper for 3x3
+            if (depth >= maxDepth * 2) return 0;
+
+            if (isMaximizingPlayer) { 
+                let bestScore = -Infinity;
+                for (let i = 0; i < currentBoard.length; i++) {
+                    if (currentBoard[i] === null) {
+                        currentBoard[i] = aiPlayerSymbol;
+                        bestScore = Math.max(bestScore, minimax_TTTG(currentBoard, depth + 1, false, alpha, beta));
+                        currentBoard[i] = null; 
+                        alpha = Math.max(alpha, bestScore);
+                        if (beta <= alpha) break; 
+                    }
+                }
+                return bestScore;
+            } else { 
+                let bestScore = Infinity;
+                for (let i = 0; i < currentBoard.length; i++) {
+                    if (currentBoard[i] === null) {
+                        currentBoard[i] = humanPlayerSymbol;
+                        bestScore = Math.min(bestScore, minimax_TTTG(currentBoard, depth + 1, true, alpha, beta));
+                        currentBoard[i] = null; 
+                        beta = Math.min(beta, bestScore);
+                        if (beta <= alpha) break; 
+                    }
+                }
+                return bestScore;
+            }
+        }
+
+        function findBestMoveAI_TTTG(currentBoardState) {
+            let bestScore = -Infinity;
+            let move = -1;
+            let tempBoardState = [...currentBoardState];
+            for (let i = 0; i < tempBoardState.length; i++) {
+                if (tempBoardState[i] === null) {
+                    tempBoardState[i] = aiPlayerSymbol; 
+                    let score = minimax_TTTG(tempBoardState, 0, false, -Infinity, Infinity); 
+                    tempBoardState[i] = null; 
+                    if (score > bestScore) { bestScore = score; move = i; }
+                }
+            }
+            if (move === -1) {
+                const emptyCells = [];
+                for(let i=0; i < currentBoardState.length; i++) if(currentBoardState[i] === null) emptyCells.push(i);
+                if(emptyCells.length > 0) move = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+            }
+            return move;
+        }
+
+        // --- UI and Game Flow ---
         function endGame(message) {
             gameActive = false;
-            statusElement.textContent = message;
             showModal(message);
+            if (currentGameType !== 'SnakesLadders') setBoardDisabled(true); 
+            else rollDiceButton.disabled = true;
         }
-
-        function restartGame() {
-            initializeGame(currentBoardSize, currentWinStreak);
-        }
-
+        
         function showModal(message) {
             messageText.textContent = message;
             messageBox.classList.remove('hidden');
             overlay.classList.remove('hidden');
         }
-
         function hideModal() {
             messageBox.classList.add('hidden');
             overlay.classList.add('hidden');
         }
 
-        restartButton.addEventListener('click', restartGame);
+        function updateActiveButtonStyles() {
+            vsAIButton.classList.toggle('active', gameMode === 'vsAI');
+            vsPlayerButton.classList.toggle('active', gameMode === 'vsPlayer');
+            
+            gameTypeTTT3Button.classList.toggle('active', currentGameType === 'TTT3');
+            gameTypeTTT5Button.classList.toggle('active', currentGameType === 'TTT5');
+            gameTypeGomoku9Button.classList.toggle('active', currentGameType === 'Gomoku9');
+            gameTypeSnakesLaddersButton.classList.toggle('active', currentGameType === 'SnakesLadders');
+        }
+
+        // --- Event Listeners ---
+        restartButton.addEventListener('click', initializeGame);
         closeMessageButton.addEventListener('click', hideModal);
         overlay.addEventListener('click', hideModal);
-        size3x3Button.addEventListener('click', () => initializeGame(3, 3));
-        size5x5Button.addEventListener('click', () => initializeGame(5, 4));
 
-        initializeGame(3, 3); 
+        vsAIButton.addEventListener('click', () => { gameMode = 'vsAI'; initializeGame(); });
+        vsPlayerButton.addEventListener('click', () => { gameMode = 'vsPlayer'; initializeGame(); });
+        
+        gameTypeTTT3Button.addEventListener('click', () => {
+            currentGameType = 'TTT3'; tttgBoardSize = 3; tttgWinStreak = 3; initializeGame();
+        });
+        gameTypeTTT5Button.addEventListener('click', () => {
+            currentGameType = 'TTT5'; tttgBoardSize = 5; tttgWinStreak = 4; initializeGame();
+        });
+        gameTypeGomoku9Button.addEventListener('click', () => { 
+            currentGameType = 'Gomoku9'; tttgBoardSize = 9; tttgWinStreak = 5; initializeGame();
+        });
+        gameTypeSnakesLaddersButton.addEventListener('click', () => {
+            currentGameType = 'SnakesLadders'; initializeGame();
+        });
+
+        // --- Initial Game Setup ---
+        initializeGame(); 
     </script>
 </body>
-
 </html>
